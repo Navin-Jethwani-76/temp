@@ -90,15 +90,76 @@ function addDivs() {
         date: cells[3].textContent,
       };
       data.push(rowData);
+      // console.log(rowData);
+      //   appendRowDataToJSON(id,name,author,date);
     }
-
-    // log the JSON data to the console
-    console.log(JSON.stringify(data));
+    console.log(data);
   }
 
   document.body.appendChild(div1);
   document.body.appendChild(div2);
 }
+function loadStaticJson() {
+  fetch("json/data.json")
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+        // console.log(response);
+      } else {
+        throw new Error("Failed to load table data");
+      }
+    })
+    .then((data) => {
+      // console.log(data);
+      // loop through the data and add it to the table
+      for (let i = 0; i < data.length; i++) {
+        const table = document.querySelector("table");
+        const row = table.insertRow(i + 1);
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+        cell1.innerText = data[i].id;
+        cell2.innerText = data[i].name;
+        cell3.innerText = data[i].author;
+        cell4.innerText = data[i].date;
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+function appendRowDataToJSON(id, name, author, date) {
+  // create an object for the new row data
+  const rowData = {
+    id: id,
+    name: name,
+    author: author,
+    date: date,
+  };
 
+  // convert the data to JSON
+  const json = JSON.stringify([rowData]);
+
+  // append the data to the file using the fetch API
+  fetch("data.json", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: json,
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Row data appended to file successfully");
+      } else {
+        console.error("Failed to append row data to file");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 // call the function to add the divs and example rows
 addDivs();
+loadStaticJson();
