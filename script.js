@@ -75,30 +75,27 @@ function addDivs() {
     tr.appendChild(td4);
     table.appendChild(tr);
 
-    // create a JavaScript object representing the data
-    const data = {
-      id: id,
-      name: name,
-      author: author,
-      date: formattedDate,
-    };
+    // get all the rows in the table
+    const rows = table.getElementsByTagName("tr");
+    const data = [];
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "data.json");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          console.log("Data appended to file successfully");
-        } else {
-          console.error("Failed to append data to file");
-        }
-      }
-    };
-    xhr.send(JSON.stringify(data));
+    // loop through the rows and extract the cell data
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const cells = row.getElementsByTagName("td");
+      const rowData = {
+        id: cells[0].textContent,
+        name: cells[1].textContent,
+        author: cells[2].textContent,
+        date: cells[3].textContent,
+      };
+      data.push(rowData);
+    }
+
+    // log the JSON data to the console
+    console.log(JSON.stringify(data));
   }
 
-  // append first and second div to document body
   document.body.appendChild(div1);
   document.body.appendChild(div2);
 }
